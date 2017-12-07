@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <input type="text" id="txt">
+    <input type="button" id="submit" value="提交" onclick="sendMsg()">
+    <input type="button" id="close" value="关闭连接" onclick="closeConn()">
+</div>
+<div id="info"></div>
+
+<script>
+    var ws = new WebSocket("ws://127.0.0.1:8000");
+
+    /* WebSocket 对象的回调函数：
+     * onopen 连接成功后自动执行
+     * onmessage 服务端向客户端发送数据时，自动执行
+     * onclese 服务端断开连接时，自动执行
+     * */
+    ws.onopen = function () {
+        var ele = document.createElement('div');
+        ele.innerText = '【服务端 连接成功】';
+        document.getElementById('info').appendChild(ele);
+    };
+
+    ws.onmessage = function (event) {
+        var response = event.data;
+        var ele = document.createElement('div');
+        ele.innerText = response;
+        document.getElementById('info').appendChild(ele);
+    };
+
+    ws.onclose = function (event) {
+        var ele = document.createElement('div');
+        ele.innerText = '【websocket 连接关闭】';
+        document.getElementById('info').appendChild(ele);
+    };
+
+    function sendMsg() {
+        var txt = document.getElementById('txt');
+        ws.send(txt.value); //发送数据
+        txt.value = '';
+    }
+
+    function closeConn() {
+        ws.close(); //关闭websocket
+        var ele = document.createElement('div');
+        ele.innerText = '【客户端 连接关闭】';
+        document.getElementById('info').appendChild(ele);
+    }
+</script>
+
+</body>
+</html>
